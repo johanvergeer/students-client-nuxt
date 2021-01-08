@@ -1,40 +1,47 @@
+import { Module, VuexModule, Action, Mutation } from 'vuex-module-decorators'
 import axios from 'axios'
-import { Commit } from 'vuex'
-import { IStudent, IStudentsState } from '~/types/students'
+import { IStudent } from '~/types/students'
 
-export const state = () => ({
-  students: [],
-})
+@Module
+export default class StudentsModule extends VuexModule {
+  students: IStudent[] = []
 
-export const mutations = {
-  setStudents(state: IStudentsState, students: IStudent[]) {
-    state.students = students
-  },
-  addStudent(state: IStudentsState, student: IStudent) {
-    state.students.push(student)
-  },
-  deleteStudent(state: IStudentsState, student: IStudent) {
-    const index = state.students.findIndex((s) => s.id === student.id)
-    state.students.splice(index, 1)
-  },
-}
+  @Mutation
+  setStudents(students: IStudent[]) {
+    this.students = students
+  }
 
-export const actions = {
-  async loadStudents({ commit }: { commit: Commit }) {
+  @Mutation
+  addStudent(student: IStudent) {
+    this.students.push(student)
+  }
+
+  @Mutation
+  removeStudent(student: IStudent) {
+    const index = this.students.findIndex((s) => s.id === student.id)
+    this.students.splice(index, 1)
+  }
+
+  @Action
+  async loadStudents() {
     await axios.get('http://localhost:8080/students/').then((res) => {
-      commit('setStudents', res.data)
+      this.context.commit('setStudents', res.data)
     })
-  },
-  async addStudent({ commit }: { commit: Commit }, student: IStudent) {
+  }
+
+  @Action({ rawError: true })
+  async saveStudent(student: IStudent) {
     await axios.post('http://localhost:8080/students/', student).then((res) => {
-      commit('addStudent', res.data)
+      this.context.commit('addStudent', res.data)
     })
-  },
-  async deleteStudent({ commit }: { commit: Commit }, student: IStudent) {
+  }
+
+  @Action({ rawError: true })
+  async deleteStudent(student: IStudent) {
     await axios
       .delete(`http://localhost:8080/students/${student.id}`)
       .then(() => {
-        commit('deleteStudent', student)
+        this.context.commit('removeStudent', student)
       })
-  },
+  }
 }

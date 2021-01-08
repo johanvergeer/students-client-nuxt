@@ -101,7 +101,7 @@ export default class StudentsIndex extends Vue {
   }
 
   save() {
-    this.$store.dispatch('students/addStudent', this.editedStudent)
+    this.$store.dispatch('students/saveStudent', this.editedStudent)
     this.closeCreate()
   }
 
