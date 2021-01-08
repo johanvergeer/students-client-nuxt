@@ -27,26 +27,22 @@ export default class StudentsModule extends VuexModule {
 
   @Action
   async loadStudents() {
-    await $axios.$get('http://localhost:8080/students/').then((res) => {
+    await $axios.$get('/students/').then((res) => {
       this.context.commit('setStudents', res)
     })
   }
 
   @Action({ rawError: true })
   async saveStudent(student: IStudent) {
-    await $axios
-      .$post('http://localhost:8080/students/', student)
-      .then((res) => {
-        this.context.commit('addStudent', res)
-      })
+    await $axios.$post('/students/', student).then((res) => {
+      this.context.commit('addStudent', res)
+    })
   }
 
   @Action({ rawError: true })
   async deleteStudent(student: IStudent) {
-    await $axios
-      .$delete(`http://localhost:8080/students/${student.id}`)
-      .then(() => {
-        this.context.commit('removeStudent', student)
-      })
+    await $axios.$delete(`/students/${student.id}`).then(() => {
+      this.context.commit('removeStudent', student)
+    })
   }
 }
