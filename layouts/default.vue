@@ -80,6 +80,11 @@ export default {
           title: 'Inspire',
           to: '/inspire',
         },
+        {
+          icon: 'mdi-account-supervisor-outline',
+          title: 'Students',
+          to: '/students',
+        },
       ],
       miniVariant: false,
       right: true,
