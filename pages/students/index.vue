@@ -47,7 +47,7 @@
               <v-btn color="blue darken-1" text @click="closeDelete">
                 Cancel
               </v-btn>
-              <v-btn color="blue darken-1" text @click="deleteStudentConfirm">
+              <v-btn color="blue darken-1" text @click="deleteConfirm">
                 OK
               </v-btn>
               <v-spacer></v-spacer>
@@ -56,11 +56,8 @@
         </v-dialog>
       </template>
       <template v-slot:item.actions="{ item }">
-        <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+        <v-icon small @click="deleteStudent(item)"> mdi-delete </v-icon>
       </template>
-      <!--      <template v-slot:no-data>-->
-      <!--        <v-btn color="primary" @click="initialize"> Reset </v-btn>-->
-      <!--      </template>-->
     </v-data-table>
   </div>
 </template>
@@ -95,8 +92,7 @@ export default class StudentsIndex extends Vue {
   closeCreate() {
     this.dialogCreate = false
     this.$nextTick(() => {
-      this.editedStudent = Object.assign({}, this.defaultStudent)
-      this.editedStudentIndex = -1
+      this._resetEditedStudent()
     })
   }
 
@@ -105,9 +101,8 @@ export default class StudentsIndex extends Vue {
     this.closeCreate()
   }
 
-  deleteItem(student: IStudent) {
-    this.editedStudentIndex = student.id
-    this.editedStudent = Object.assign({}, student)
+  deleteStudent(student: IStudent) {
+    this._setEditedStudent(student)
     this.dialogDelete = true
   }
 
@@ -118,9 +113,14 @@ export default class StudentsIndex extends Vue {
     })
   }
 
-  async deleteStudentConfirm() {
+  async deleteConfirm() {
     await this.$store.dispatch('students/deleteStudent', this.editedStudent)
     this.closeDelete()
+  }
+
+  _setEditedStudent(student: IStudent) {
+    this.editedStudentIndex = student.id
+    this.editedStudent = Object.assign({}, student)
   }
 
   _resetEditedStudent() {

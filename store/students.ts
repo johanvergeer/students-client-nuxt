@@ -5,6 +5,7 @@ import { $axios } from '~/utils/api'
 @Module({
   stateFactory: true,
   namespaced: true,
+  name: 'students',
 })
 export default class StudentsModule extends VuexModule {
   students: IStudent[] = []
